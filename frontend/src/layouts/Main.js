@@ -13,7 +13,6 @@ import {DownOutlined, KeyOutlined, UploadOutlined, UserOutlined} from "@ant-desi
 const Main = () => {
     const [cart, setCart] =useCart();
     const {auth, token} = useAuth();
-    console.log(cart)
     // const [categories, setCategories] = useCategories();
 
 

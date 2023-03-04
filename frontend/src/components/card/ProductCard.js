@@ -12,19 +12,23 @@ const ProductCard = ({product}) => {
         product.count = 1;
 
         let cartarr = [];
-        cartarr= JSON.parse(localStorage.getItem('cart'));
+        cartarr= JSON.parse(localStorage.getItem('cart')) || [];
 
         const isProductExit = cartarr.find(item => item._id === product._id);
         if (isProductExit){
             cartarr.map((item, i) => {
                 if (item._id === product._id){
-                    cartarr[i].count += 1
+
+                    if ( cartarr[i].count !== product.quantity){
+                        cartarr[i].count += 1
+                    }
+
+
                 }
             })
         }else {
             cartarr.push(product);
         }
-
 
         localStorage.setItem('cart', JSON.stringify(cartarr));
         setCart(cartarr);

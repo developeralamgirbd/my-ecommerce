@@ -1,30 +1,52 @@
 import React, {useEffect, useState} from 'react';
-import {Card, Col, Divider, InputNumber, Row} from "antd";
+import {Button, Card, Col, Divider, InputNumber, Row} from "antd";
 import {useCart} from "../../context/cart";
+import toast from "react-hot-toast";
+import {useAuth} from "../../context/AuthProvider";
+import {checkoutRequest, getPaymentTokenRequest} from "../../APIRequest/productApi";
+import DropIn from "braintree-web-drop-in-react";
 
 const ShoppingCard = () => {
 
     const [cart, setCart] = useCart();
+    const {auth, token} = useAuth();
+    const [clientToken, setClientToken] = useState('');
+    const [instance, setInstance] = useState(null);
 
-    const [totalAmount, setTotalAmount] = useState(0);
+    const [totalPrice, setTotalPrice] = useState(0);
 
     useEffect(()=>{
-        const productPrice = cart.reduce((accumulator, currentValue) => {
+        let total = cart.reduce((accumulator, currentValue) => {
            return accumulator + currentValue.count * currentValue.price
         },0)
 
-        setTotalAmount(productPrice)
+        total.toLocaleString('en-US', {
+            style: 'currency',
+            currency: 'USD'
+        })
+
+        setTotalPrice(total)
+
     },[cart])
 
-    const getTotal = ()=>{
-      cart.reduce((accumulator, currentValue) => {
-            return accumulator + currentValue.count * currentValue.price
-        },0)
+    useEffect(()=>{
+        if (token){
+            getPaymentTokenRequest().then(res => {
+
+                setClientToken(res.clientToken)
+            })
+        }
+    },[token])
+
+    const buy = async ()=> {
+
+        // Send the nonce to your server
+        const { nonce } = await instance.requestPaymentMethod();
+        const  res = await checkoutRequest(nonce, cart);
+
+        console.log(res)
     }
 
-    const onChange = (value)=>{
-        console.log(value)
-    }
 
     return (
         <div>
@@ -53,17 +75,18 @@ const ShoppingCard = () => {
                                        <Row>
                                            <Col flex={2}><p>{product?.price}</p></Col>
                                            <Col flex={3}>
-                                               <InputNumber min={1} max={10} defaultValue={product.count} onChange={(value)=>{
+                                               <InputNumber min={1} max={product.quantity} defaultValue={product.count} onChange={(value)=>{
+
                                                     let cartarr = [];
                                                     cartarr= JSON.parse(localStorage.getItem('cart'));
                                                        cartarr.map((item, i) => {
                                                            if (item._id === product._id){
-                                                               cartarr[i].count = value
+                                                               cartarr[i].count =  value
                                                            }
                                                        })
 
                                                    localStorage.setItem('cart', JSON.stringify(cartarr));
-                                                       setCart(cartarr);
+                                                   setCart(cartarr);
                                                }} />
                                            </Col>
                                        </Row>
@@ -75,7 +98,7 @@ const ShoppingCard = () => {
 
                        <div className='d-flex justify-content-between'>
                            <p></p>
-                           <div><p>Total Amount</p><p>{totalAmount}</p></div>
+                           <div><p>Total Amount</p><p>${totalPrice}</p></div>
                        </div>
 
                    </Card>
@@ -95,7 +118,28 @@ const ShoppingCard = () => {
                         order: 4,
                     }}
                 >
-                    1 col-order-responsive
+                    {
+                        !clientToken || !cart.length ? (
+                            ""
+                        ) : <>
+                            <DropIn
+                                options={
+                                {
+                                    authorization: clientToken,
+                                    paypal: {
+                                        flow: 'vault'
+                                    }
+                                }
+                                }
+                                onInstance={(instance) => (setInstance(instance))}
+                            />
+                            <div>
+                                <Button type='primary' disabled={!instance} className='d-block buy-button' onClick={buy}>Buy</Button>
+                            </div>
+
+                        </>
+                    }
+
                 </Col>
             </Row>
         </div>
