@@ -3,7 +3,7 @@ import AdminMain from "../layouts/AdminMain";
 import DashboardPage from "../pages/dashboard/Dashboard-page";
 import HomePage from "../pages/HomePage";
 import LoginPage from "../pages/auth/LoginPage";
-import Main from "../layouts/Main";
+import Main from "../layouts/customer/Main";
 import RegisterPage from "../pages/auth/RegisterPage";
 import ForgotPasswordPage from "../pages/auth/ForgotPasswordPage";
 import VerifyOtpPage from "../pages/auth/VerifyOtpPage";
@@ -22,8 +22,7 @@ import ShoppingCard from "../components/card/ShoppingCard";
 import SuperAdminRoute from "./superAdminRoute";
 import UserMain from "../layouts/UserMain";
 import UserDashboardPage from "../pages/dashboard/UserDashboard-page";
-
-
+import OrderPage from "../pages/OrderPage";
 
 const router = createBrowserRouter([
 
@@ -110,20 +109,24 @@ const router = createBrowserRouter([
     },
 
     {
-        path: '/dashboard',
-        element: <PrivateRoute><UserMain/></PrivateRoute> ,
+        path: '/customer',
+        element: <PrivateRoute><Main/></PrivateRoute> ,
         children: [
             {
                 index: true,
                 element: <UserDashboardPage/>
             },
             {
-                path: 'dashboard/profile',
+                path: '/customer/profile',
                 element: <ProfilePage/>
             },
             {
-                path: 'dashboard/change-password',
+                path: '/customer/change-password',
                 element: <UpdatePasswordPage/>
+            },
+            {
+                path: '/customer/orders',
+                element: <OrderPage/>
             },
         ]
     },

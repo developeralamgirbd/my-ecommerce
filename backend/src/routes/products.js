@@ -26,8 +26,4 @@ router.get('/products/:id', getProductById);
 router.patch('/posts/:id', AuthVerifyMiddleware, updatePost);
 router.delete('/posts/:id', AuthVerifyMiddleware, deletePost)
 
-// Order route
-router.get('/braintree-token', AuthVerifyMiddleware, createBraintreeToken)
-router.post('/checkout', AuthVerifyMiddleware, checkout)
-
 module.exports = router;

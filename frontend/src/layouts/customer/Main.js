@@ -1,11 +1,11 @@
 import React from 'react';
 import {Link, NavLink, Outlet} from "react-router-dom";
 import {Avatar, Badge, Dropdown, Space} from "antd";
-import useCategories from "../hooks/useCategories";
-import Search from "../components/Search";
-import {useCart} from "../context/cart";
-import {useAuth} from "../context/AuthProvider";
-import {sessionRemove} from "../helpers/sessionHelper";
+import useCategories from "../../hooks/useCategories";
+import Search from "../../components/Search";
+import {useCart} from "../../context/cart";
+import {useAuth} from "../../context/AuthProvider";
+import {sessionRemove} from "../../helpers/sessionHelper";
 import {DownOutlined, KeyOutlined, UploadOutlined, UserOutlined} from "@ant-design/icons";
 
 
@@ -24,17 +24,8 @@ const Main = () => {
         {
             key: '1',
             label: (
-                <Link to='/admin/profile'>
+                <Link to='/customer/profile'>
                     Profile
-                </Link>
-            ),
-            icon: <UserOutlined />
-        },
-        {
-            key: '3',
-            label: (
-                <Link to='/admin/profile'>
-                    Orders
                 </Link>
             ),
             icon: <UserOutlined />
@@ -42,16 +33,25 @@ const Main = () => {
         {
             key: '2',
             label: (
-                <Link to='/admin/change-password'>
+                <Link to='/customer/orders'>
+                    Orders
+                </Link>
+            ),
+            icon: <UserOutlined />
+        },
+        {
+            key: '3',
+            label: (
+                <Link to='/customer/change-password'>
                     Change Password
                 </Link>
             ),
             icon: <KeyOutlined rotate={-130} />
         },
         {
-            key: '3',
+            key: '4',
             label: (
-                <a href='#' onClick={logout} >
+                <a href='/' onClick={logout} >
                     Log Out
                 </a>
             ),
@@ -93,25 +93,25 @@ const Main = () => {
                                {
                                    token ? <>
                                        <li className="nav-item">
-                                           <NavLink className="nav-link" aria-current="page" to="/dashboard">Dashboard</NavLink>
+
+                                               <Dropdown
+                                                   menu={{
+                                                       items,
+                                                   }}
+                                                   className="nav-link"
+                                               >
+                                                   <a onClick={(e) => e.preventDefault()}>
+                                                       <Space>
+                                                           Account
+                                                           <DownOutlined />
+                                                       </Space>
+                                                   </a>
+                                               </Dropdown>
+
+
                                        </li>
 
-                                       <Dropdown
-                                           menu={{
-                                               items,
-                                           }}
-                                       >
-                                           <a onClick={(e) => e.preventDefault()}>
-                                               <Space>
-                                                   Account
-                                                   <DownOutlined />
-                                               </Space>
-                                           </a>
-                                       </Dropdown>
 
-                                       <li className="nav-item">
-                                           <NavLink className="nav-link" aria-current="page" onClick={logout}>Logout</NavLink>
-                                       </li>
                                    </> : <>
                                        <li className="nav-item">
                                            <NavLink className="nav-link" aria-current="page" to="/login">Login</NavLink>

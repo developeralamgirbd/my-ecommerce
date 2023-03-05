@@ -20,7 +20,7 @@ const LoginForm = () => {
             setAuth(res.data.user);
             setToken(res.data.token)
 
-            window.location.href =  location.state || `/${res?.data?.user?.role === 'superadmin' ? "admin" : "/"}`
+            window.location.pathname =  location.state || `/${res?.data?.user?.role === 'superadmin' ? "admin" : ""}`
         })
     };
 

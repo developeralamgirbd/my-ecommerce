@@ -4,12 +4,12 @@ const slugify = require("slugify");
 const productSchema = new Schema({
     name: {
             type: String,
-            required: [true, 'Title is required'],
-            unique: [true, 'Title is already exit'],
+            required: [true, 'Product Name is required'],
+            unique: [true, 'Product is already exit'],
             trim: true,
             lowercase: true,
-            minLength: [3, 'Title must be at least 3 character'],
-            maxLength: [100, 'Title is too large']
+            minLength: [3, 'Product Name must be at least 3 character'],
+            maxLength: [100, 'Product Name is too large']
         },
     slug: {
       type: String
