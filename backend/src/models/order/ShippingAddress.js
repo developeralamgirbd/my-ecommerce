@@ -12,21 +12,27 @@ const shippingAddressSchema = new Schema({
     },
     address: {
         type: String,
+        required: [true, 'Address is required']
     },
     city: {
         type: String,
+        required: [true, 'city is required']
     },
     state: {
         type: String,
+        required: [true, 'state is required']
     },
     country: {
         type: String,
+        required: [true, 'country is required']
     },
     zipCode: {
         type: String,
+        required: [true, 'zipCode is required']
     },
     mobile: {
         type: String,
+        required: [true, 'mobile is required']
     },
 
 

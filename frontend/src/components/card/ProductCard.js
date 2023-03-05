@@ -15,15 +15,14 @@ const ProductCard = ({product}) => {
         cartarr= JSON.parse(localStorage.getItem('cart')) || [];
 
         const isProductExit = cartarr.find(item => item._id === product._id);
+
         if (isProductExit){
             cartarr.map((item, i) => {
                 if (item._id === product._id){
-
                     if ( cartarr[i].count !== product.quantity){
-                        cartarr[i].count += 1
+                        cartarr[i].count += 1;
+                        cartarr[i].price = product.price
                     }
-
-
                 }
             })
         }else {

@@ -26,11 +26,16 @@ const limiter = rateLimit({
 });
 app.use(limiter);
 
-
 		
 		
 // Router
 readdirSync('./src/routes').map(r => app.use('/api/v1', require(`./src/routes/${r}`)));
+
+app.use((err, req, res, nex)=>{
+	res.status(err.status ? err.status : 500).json({
+		error: err.message ? err.message : 'Something went worng'
+	})
+})
 
 const port = process.env.PORT || 8000;
 // DB Connection

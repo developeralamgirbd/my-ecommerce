@@ -5,27 +5,22 @@ const PaymentModel = require('../../models/order/Payment');
 const ShippingAddressModel = require('../../models/order/ShippingAddress');
 const ProductModel = require('../../models/product/Product');
 const AddressModel = require('../../models/user/Address');
+const { error } = require('../../utils/error');
 
 const ObjectId = mongoose.Types.ObjectId;
-// payment jokhon hobe tokhon 3 ta model niye kaj korte hobe
-//
-// 1. Order
-// 2. OrderItem
-// 3. Payment
-// 4. Products
-// 5. ShippingAddress
 
-exports.orderCreateService =  async (nonce, cart, gateway, user, shippingAddressObj)=>{
+exports.orderCreateService =  async (nonce, products, gateway, user, shippingAddressObj)=>{
     	const session = await mongoose.startSession();
         await session.startTransaction();
 
         try {
-
             const options = { session };
 
-            let amount = cart.reduce((accumulator, currentValue) => {
+            let amount = products.reduce((accumulator, currentValue) => {
                 return accumulator + currentValue.count * currentValue.price
             },0)
+
+            console.log(products);
 
             parseFloat(amount).toFixed(2);
             // Braintree Payment Process
@@ -33,7 +28,7 @@ exports.orderCreateService =  async (nonce, cart, gateway, user, shippingAddress
                 amount: amount,
                 customer: {
                     id: user?._id,
-                    firstName: `ID: ${user?._id}`,
+                    firstName: `ID: ${user?._id},`,
                     lastName: `Email: ${user?.email}`,
                     company: null,
                     email: user?.email,
@@ -47,7 +42,9 @@ exports.orderCreateService =  async (nonce, cart, gateway, user, shippingAddress
                 }
             });
 
-            console.log(newTransaction.transaction.paymentMethod)
+            console.log(newTransaction);
+            debugger;
+
 
             // 1st DB Process Order create
             let orderID = 1;
@@ -67,12 +64,12 @@ exports.orderCreateService =  async (nonce, cart, gateway, user, shippingAddress
 
             // 2nd DB Process Order Items create
 
-            const orderItems = cart.reduce((accumulator, currentValue)=>{
+            const orderItems = products.reduce((accumulator, currentValue)=>{
                return [...accumulator, {
                    orderID: newOrder?._id,
-                   productID: currentValue._id,
-                   price: newTransaction.transaction.amount,
-                   quantity: currentValue.count
+                   productID: currentValue?._id,
+                   price: currentValue?.price,
+                   quantity: currentValue?.count
                }]
             }, []);
 
@@ -82,10 +79,9 @@ exports.orderCreateService =  async (nonce, cart, gateway, user, shippingAddress
             const newOrderItems = await OrderItemModel.insertMany(orderItems, options);
 
             // 3rd DB Process Shipping Address create
-            const userAddress = AddressModel.findOne({userID: ObjectId(user?._id)});
-            // console.log(userAddress);
+            const userAddress = await AddressModel.findOne({userID: ObjectId(user?._id)});
 
-            const shippingAddress = new ShippingAddressModel({
+            const shippingAddress = await ShippingAddressModel.updateOne({userID: ObjectId(user?._id)},{
                 userID: user?._id,
                 name: shippingAddressObj?.name || `${user.firstName} ${user.lastName}`,
                 address: shippingAddressObj?.name || userAddress?.address,
@@ -94,9 +90,7 @@ exports.orderCreateService =  async (nonce, cart, gateway, user, shippingAddress
                 country: shippingAddressObj?.country || userAddress?.country,
                 zipCode: shippingAddressObj?.zipCode || userAddress?.zipCode,
                 mobile: shippingAddressObj?.mobile || user?.mobile,
-            });
-
-            await shippingAddress.save(options);
+            }, {upsert: true, ...options});
 
             // 4th DB Process Payment create
 
@@ -117,7 +111,7 @@ exports.orderCreateService =  async (nonce, cart, gateway, user, shippingAddress
             await session.abortTransaction();
             session.endSession();
             console.error('Transaction aborted:', e);
-            return e
+           throw error('Something went wrong')
 
         }
 }

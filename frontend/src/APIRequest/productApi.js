@@ -109,27 +109,22 @@ export const deletePostRequest = async (id)=>{
     }
 }
 
-
 // Order API Request
-
 export const getPaymentTokenRequest = async ()=>{
     try {
         const {data} = await axios.get(`/braintree-token`);
-
        return data
-
     }catch (e) {
-        toast.error('Server error occurred')
+        toast.error(e.response.data.error)
     }
 }
 
 export const checkoutRequest = async (nonce, cart)=>{
     try {
         const {data} = await axios.post(`/checkout`, {nonce, cart});
-
         return data
-
     }catch (e) {
-        toast.error('Server error occurred')
+        toast.error(e.response.data.error)
+        return false
     }
 }

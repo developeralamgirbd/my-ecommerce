@@ -3,7 +3,7 @@ import {Button, Card, Col, Divider, InputNumber, Row} from "antd";
 import {useCart} from "../../context/cart";
 import toast from "react-hot-toast";
 import {useAuth} from "../../context/AuthProvider";
-import {checkoutRequest, getPaymentTokenRequest} from "../../APIRequest/productApi";
+import {checkoutRequest, getPaymentTokenRequest, getSingleProductRequest} from "../../APIRequest/productApi";
 // import DropIn from "braintree-web-drop-in-react";
 import DropIn from "braintree-web-drop-in";
 import {useNavigate} from "react-router-dom";
@@ -20,16 +20,16 @@ const ShoppingCard = () => {
     const navigate = useNavigate();
 
     useEffect(()=>{
+
         let total = cart.reduce((accumulator, currentValue) => {
            return accumulator + currentValue.count * currentValue.price
         },0)
-
         total.toLocaleString('en-US', {
             style: 'currency',
             currency: 'USD'
         })
-
         setTotalPrice(total)
+
 
     },[cart])
 
@@ -49,7 +49,7 @@ const ShoppingCard = () => {
         if (clientToken){
             dropInContainer().catch(e => {})
         }
-    },[clientToken])
+    },[clientToken, loading])
 
    const dropInContainer = async ()=>{
       const dropInInstance =  await DropIn.create({
@@ -65,17 +65,17 @@ const ShoppingCard = () => {
         const { nonce } = await instance.requestPaymentMethod();
         setLoading(true)
         const res = await checkoutRequest(nonce, cart);
-        setLoading(false)
-        console.log(res)
-
-        if (res.success){
+        setLoading(false);
+        console.log(res);
+        if (!res){
+            toast.error('Something went worng');
+        } else if(res.success || res.success === false){
+            navigate('/customer/orders')
+            localStorage.removeItem('cart');
+            setCart([])
             toast.success('Payment Successfully');
-        }else {
-            toast.error('Payment Failed');
         }
-        navigate('/customer/orders')
-        localStorage.removeItem('cart');
-        setCart([])
+        // dropInContainer().catch(e => {})           
     }
 
 
@@ -104,7 +104,8 @@ const ShoppingCard = () => {
                                                             <InputNumber min={1} max={product.quantity} defaultValue={product.count} onChange={(value)=>{
 
                                                                 let cartarr = [];
-                                                                cartarr= JSON.parse(localStorage.getItem('cart'));
+                                                                cartarr = JSON.parse(localStorage.getItem('cart'));
+
                                                                 cartarr.map((item, i) => {
                                                                     if (item._id === product._id){
                                                                         cartarr[i].count =  value
@@ -124,7 +125,7 @@ const ShoppingCard = () => {
 
                                     <div className='d-flex justify-content-between'>
                                         <p></p>
-                                        <div><p>Total Amount</p><p>${totalPrice}</p></div>
+                                        <div><p>Total Amount</p><p>${parseFloat(totalPrice).toFixed(2)}</p></div>
                                     </div>
 
                                 </Card>

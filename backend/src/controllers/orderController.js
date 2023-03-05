@@ -10,14 +10,16 @@ const gateway = new braintree.BraintreeGateway({
 });
 
 const {orderCreateService} = require("../services/order/orderCreateService");
+const {productValidityService} = require("../services/productService/productService");
+const { error } = require("../utils/error");
 
-exports.createBraintreeToken = async (req, res)=>{
+exports.createBraintreeToken = async (_req, res, next)=>{
     try {
         const clientToken =  await gateway.clientToken.generate();
         res.status(200).json(clientToken)
 
     }catch (e) {
-        res.status(500).json({error: 'Server error occurred'})
+        next(e)
     }
 
     // gateway.clientToken.generate({
@@ -28,17 +30,18 @@ exports.createBraintreeToken = async (req, res)=>{
     // });
 }
 
-exports.checkout = async (req, res)=>{
+exports.checkout = async (req, res, next)=>{
     try {
         // console.log(req.body)
 
         const {nonce, cart} = req.body;
         const user = req?.auth;
-       const result = await orderCreateService(nonce, cart, gateway, user);
+        const products = await productValidityService(cart);
+       const result = await orderCreateService(nonce, products, gateway, user);
         // console.log(result)
         res.status(200).json(result)
 
     }catch (e) {
-        res.status(500).json({error: 'Server error occurred'})
+        next(e)
     }
 }

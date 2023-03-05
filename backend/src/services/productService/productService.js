@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const Product = require("../../models/product/Product");
+const { error } = require("../../utils/error");
 const ObjectId = mongoose.Types.ObjectId;
 
 exports.productCreateService = async (productBody)=>{
@@ -210,5 +211,23 @@ exports.productUpdateService = async (_id, userID, updateBody)=>{
 
 exports.productDeleteService = async (userID, _id)=>{
 	return Product.remove({userID:  ObjectId(userID), _id: ObjectId(_id)});
+}
+
+exports.productValidityService = async (cart)=>{
+	
+		const ids = cart.reduce((accumulator, current)=>{
+			return [...accumulator, ObjectId(current._id)]
+		}, [])
+
+		
+		const qtys = cart.reduce((accumulator, current)=>{
+			return [...accumulator, current.count]
+		}, [])		
+
+	  const products = await Product.find({_id: {$in: ids}, quantity: {$in: qtys}})	 
+	 
+	 if(!products || products.length !== cart.length) throw error('Something went wrong');
+
+	 return cart;	
 }
 
