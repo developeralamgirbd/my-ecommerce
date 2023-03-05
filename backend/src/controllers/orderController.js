@@ -21,24 +21,15 @@ exports.createBraintreeToken = async (_req, res, next)=>{
     }catch (e) {
         next(e)
     }
-
-    // gateway.clientToken.generate({
-    //     customerId: aCustomerId
-    // }).then(response => {
-    //     // pass clientToken to your front-end
-    //     const clientToken = response.clientToken
-    // });
 }
 
 exports.checkout = async (req, res, next)=>{
     try {
-        // console.log(req.body)
 
         const {nonce, cart} = req.body;
         const user = req?.auth;
         const products = await productValidityService(cart);
        const result = await orderCreateService(nonce, products, gateway, user);
-        // console.log(result)
         res.status(200).json(result)
 
     }catch (e) {

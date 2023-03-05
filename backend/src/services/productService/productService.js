@@ -222,11 +222,19 @@ exports.productValidityService = async (cart)=>{
 		
 		const qtys = cart.reduce((accumulator, current)=>{
 			return [...accumulator, current.count]
-		}, [])		
+		}, [])	
+		
+		// product find with cart products ids
+	  const products = await Product.find({_id: {$in: ids}})
+	//   if finded producs length not equal cart length
+	  if(!products || products.length !== cart.length) throw error('Something went wrong');
 
-	  const products = await Product.find({_id: {$in: ids}, quantity: {$in: qtys}})	 
-	 
-	 if(!products || products.length !== cart.length) throw error('Something went wrong');
+	//   products filter with cart products quantity equel or less then
+	 const quantityFiltered = products.filter((item,i) => {
+		item.quantity <= qtys[i]
+	  })
+	//   if product quantity not equel or less then cart count
+	 if(!quantityFiltered || quantityFiltered.length !== products.length) throw error('Something went wrong');
 
 	 return cart;	
 }

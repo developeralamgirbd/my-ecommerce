@@ -20,7 +20,7 @@ exports.orderCreateService =  async (nonce, products, gateway, user, shippingAdd
                 return accumulator + currentValue.count * currentValue.price
             },0)
 
-            console.log(products);
+            // console.log(products);
 
             parseFloat(amount).toFixed(2);
             // Braintree Payment Process
@@ -42,9 +42,8 @@ exports.orderCreateService =  async (nonce, products, gateway, user, shippingAdd
                 }
             });
 
-            console.log(newTransaction);
-            debugger;
-
+            // console.log(newTransaction);
+            
 
             // 1st DB Process Order create
             let orderID = 1;
