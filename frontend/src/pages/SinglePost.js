@@ -1,8 +1,8 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import { getSingleProductRequest} from "../APIRequest/productApi";
 import {useParams} from "react-router-dom";
 import ReactImageMagnify from 'react-image-magnify'
-import {Col, Row, Card, Typography, Input, Button} from 'antd';
+import {Col, Row, Card, Typography, Input, Button, Segmented} from 'antd';
 import toast from "react-hot-toast";
 import {useCart} from "../context/cart";
 import {MinusOutlined, PlusOutlined} from "@ant-design/icons";
@@ -18,6 +18,8 @@ const SinglePost = () => {
     const [product, setProduct] = useState({});
     const params = useParams();
     const [count, setCount] = useState(1)
+    const [openDesc, setOpenDesc] = useState(true);
+    const [openSpec, setOpenSpec] = useState(false);
 
     useEffect(()=>{
         getSingleProductRequest(params.id).then(res => {
@@ -30,6 +32,7 @@ const SinglePost = () => {
 
     const handleMouseEnter = () => {
       setIsHovered(true);
+
     };
   
     const handleMouseLeave = () => {
@@ -70,56 +73,89 @@ const SinglePost = () => {
         if (count === 1) return;
         setCount(prevState => prevState - 1)
     }
+    const descriptionHandler = ()=>{
+
+        setOpenDesc(true)
+        setOpenSpec(false)
+    }
+    const specificationHandler = ()=>{
+
+        setOpenSpec(true)
+        setOpenDesc(false)
+    }
 
 
     return (
         <>
             <Row gutter={16}>
-                <Col span={10}>
-                <Card
-                    
-                    >                    
-                    <ReactImageMagnify {...{
-                    smallImage: {
-                        alt: 'Wristwatch by Ted Baker London',
-                        isFluidWidth: true,
-                        src: imageSrc
-                    },
-                    largeImage: {
-                        src: imageSrc,
-                        width: 1200,
-                        height: 1800,
-                        zIndex: 1000
-                    },
-                        enlargedImagePosition: 'over',
-                }} />
-                </Card>
-                </Col>
-                <Col span={7}>
-                    <div className='d-flex gap-2'>
-                        <div className='p-1' style={{background: '#fafafa', color: '#595959'}}>Category: {product.categoryName}</div>
-                        <div className='p-1' style={{background: '#fafafa', color: '#595959'}}>Brand: Brand</div>
-                    </div>
-                    <Title>{product.name}</Title>
-                    <Title>${product.price}</Title>
-                    <div className='d-flex gap-2 align-items-center'>
-                        <div style={{background: '#eaff8f', color: '#5b8c00', borderRadius: '5px', padding: '10px'}}>In stock</div>                      
-                        <p style={{padding: '10px', margin: 0}}>{product.quantity} items remaining</p>                                          
-                    </div>
-                    <div className='d-flex gap-2 align-items-center mt-4'>
-                        <Input
-                            addonBefore={<MinusOutlined onClick={decrease}/>}
-                            addonAfter={<PlusOutlined onClick={increase} />}
-                            value={count} readOnly size='large' />
-                        <Button type="primary"
-                                style={{background: '#faad14', color: '#141414', fontWeight: 'bold', padding: '0 40px'}}
-                               size='large' onClick={handleCart}>Add to cart</Button>
-                    </div>
-                
-                    
-                </Col>
-                <Col span={7}>
+                <Col span={16}>
+                    <Row gutter={16}>
+                        <Col span={12}>
+                            <Card
 
+                            >
+                                <ReactImageMagnify {...{
+                                    smallImage: {
+                                        alt: 'Wristwatch by Ted Baker London',
+                                        isFluidWidth: true,
+                                        src: imageSrc
+                                    },
+                                    largeImage: {
+                                        src: imageSrc,
+                                        width: 1200,
+                                        height: 1800,
+                                        zIndex: 1000
+                                    },
+                                    enlargedImagePosition: 'over',
+                                }} />
+                            </Card>
+                        </Col>
+                        <Col span={12}>
+
+                            <div className='d-flex gap-2'>
+                                <div className='p-1' style={{background: '#fafafa', color: '#595959'}}>Category: {product.categoryName}</div>
+                                <div className='p-1' style={{background: '#fafafa', color: '#595959'}}>Brand: Brand</div>
+                            </div>
+                            <Title>{product.name}</Title>
+                            <Title>${product.price}</Title>
+                            <div className='d-flex gap-2 align-items-center'>
+                                <div style={{background: '#eaff8f', color: '#5b8c00', borderRadius: '5px', padding: '10px'}}>In stock</div>
+                                <p style={{padding: '10px', margin: 0}}>{product.quantity} items remaining</p>
+                            </div>
+                            <Row className='mt-4' gutter={16}>
+                                <Col span={8}>
+                                    <Input
+                                        addonBefore={<MinusOutlined onClick={decrease}/>}
+                                        addonAfter={<PlusOutlined onClick={increase} />}
+                                        value={count} readOnly size='large' />
+
+                                </Col>
+                                <Col span={16}>
+                                    <Button type="primary"
+                                            style={{background: '#faad14', color: '#141414', fontWeight: 'bold', padding: '0 40px'}}
+                                            size='large' onClick={handleCart}>Add to cart</Button>
+                                </Col>
+
+                            </Row>
+                        </Col>
+                    </Row>
+                    <Segmented block options={[
+                        {
+                            label: <div onClick={descriptionHandler}>Description</div>,
+                            value: 'description'
+                        },
+                        {
+                            label: <div onClick={specificationHandler}>Specification</div>,
+                            value: 'specification'
+                        }
+                    ]} />
+
+                    <div style={{display: openDesc ? 'block': 'none'}}>Descipton</div>
+                    <div style={{display: openSpec ? 'block': 'none'}}>Specification</div>
+
+                </Col>
+                <Col span={8}>
+                    Right Side Bar
                 </Col>
             </Row>
 

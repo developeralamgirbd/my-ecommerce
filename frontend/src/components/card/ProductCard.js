@@ -54,16 +54,16 @@ const ProductCard = ({product}) => {
                 <div className='text-center'>
                     <h1>
                         <Link to={`/post/${product._id}`}>                           
-                            <Title level={4}> {product.name}</Title>
+                            <Title level={5}> {product.name}</Title>
                         </Link>
                     </h1>
                     <p>Price: {product.price}</p>
                     <div className='d-flex gap-2 justify-content-center'>
                         <Button type="primary"
-                                style={{background: '#faad14', color: '#141414', fontWeight: 'bold', padding: '0 40px'}}
+                                style={{background: '#faad14', color: '#141414', fontWeight: 'bold', padding: '0 20px'}}
                                 size='large' onClick={handleCart}>Add to cart</Button>
                         <Button type="primary"
-                                style={{fontWeight: 'bold', padding: '0 40px'}}
+                                style={{fontWeight: 'bold', padding: '0 20px'}}
                                 danger size='large' className='ml-2'>Buy now</Button>
                     </div>
 

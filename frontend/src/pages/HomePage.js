@@ -57,7 +57,7 @@ const HomePage = () => {
 
                 {
                     products.map(product => (
-                            <Col span={8}>
+                            <Col span={6}>
                                  <ProductCard product={product}/>
                              </Col>
                     ))

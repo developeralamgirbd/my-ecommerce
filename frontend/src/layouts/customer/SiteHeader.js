@@ -94,7 +94,7 @@ const SiteHeader = () => {
                                             <li className="nav-item">
                                                 <NavLink className="nav-link" aria-current="page" to="/cart">
                                                     <Badge count={cart.length} offset={[0,-4]} color='#faad14' style={{color: 'black'}}>
-                                                        <ShoppingCartOutlined style={{ fontSize: '26px', color: '#08c' }} />
+                                                        <ShoppingCartOutlined style={{ fontSize: '26px', color: '#FF7875' }} />
                                                     </Badge>
                                                 </NavLink>
                                             </li>
