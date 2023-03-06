@@ -1,5 +1,5 @@
 import {createBrowserRouter, createRoutesFromElements, Route, Routes} from "react-router-dom";
-import AdminMain from "../layouts/AdminMain";
+import AdminMain from "../layouts/admin/AdminMain";
 import DashboardPage from "../pages/dashboard/Dashboard-page";
 import HomePage from "../pages/HomePage";
 import LoginPage from "../pages/auth/LoginPage";

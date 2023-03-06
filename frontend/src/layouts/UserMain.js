@@ -1,9 +1,9 @@
 import React from 'react';
 import {Breadcrumb, Layout} from "antd";
-import SideMenuBar from "./SideMenuBar";
-import AppHeader from "./AppHeader";
+import SideMenuBar from "./admin/SideMenuBar";
+import AppHeader from "./admin/AppHeader";
 import {Outlet} from "react-router-dom";
-import AppFooter from "./AppFooter";
+import AppFooter from "./admin/AppFooter";
 import {Content} from "antd/es/layout/layout";
 
 const UserMain = () => {

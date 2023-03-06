@@ -1,8 +1,8 @@
 import React, {useState} from 'react';
 import {Avatar, Dropdown, Space, theme, Layout, Row, Col, Button} from "antd";
 import {DownOutlined, KeyOutlined, SmileOutlined, UploadOutlined, UserOutlined} from "@ant-design/icons";
-import {sessionRemove} from "../helpers/sessionHelper";
-import {useAuth} from "../context/AuthProvider";
+import {sessionRemove} from "../../helpers/sessionHelper";
+import {useAuth} from "../../context/AuthProvider";
 import {Link} from "react-router-dom";
 
 const {Header} = Layout;
@@ -33,7 +33,7 @@ const items = [
     {
         key: '3',
         label: (
-            <a href='#' onClick={logout} >
+            <a href='frontend/src/layouts/admin/AppHeader#' onClick={logout} >
                Log Out
             </a>
         ),

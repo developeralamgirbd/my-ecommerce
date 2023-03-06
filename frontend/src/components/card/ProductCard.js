@@ -3,6 +3,7 @@ import {Link} from "react-router-dom";
 import {Button} from "antd";
 import toast from "react-hot-toast";
 import {useCart} from "../../context/cart";
+import {Card} from 'antd'
 
 const ProductCard = ({product}) => {
 
@@ -41,12 +42,23 @@ const ProductCard = ({product}) => {
                     <Link to={`/post/${product._id}`}>
                         {product.name}
                     </Link>
-
                 </h1>
                 <p>Price: {product.price}</p>
                 <Button type="primary" className='mr-2' size='small' onClick={handleCart}>Add to cart</Button>
                 <Button type="primary" color='#ffec3d' size='small' className='ml-2'>Buy now</Button>
             </div>
+
+            <Card
+                title="Default size card"
+                extra={<a href="#">More</a>}
+                style={{
+                    width: 300,
+                }}
+            >
+            <p>Card content</p>
+            <p>Card content</p>
+            <p>Card content</p>
+            </Card>
         </>
     );
 };
