@@ -1,7 +1,8 @@
 import React, {useEffect, useState} from 'react';
-import {Button, Col, Row} from "antd";
+import {Button, Col, List, Row} from "antd";
 import {getProductsRequest} from "../APIRequest/productApi";
 import ProductCard from "../components/card/ProductCard";
+import TopSection from "../components/home/TopSection";
 
 const HomePage = () => {
 
@@ -51,6 +52,7 @@ const HomePage = () => {
 
     return (
         <>
+            <TopSection/>
             <Row gutter={16}>
 
                 {
@@ -61,6 +63,7 @@ const HomePage = () => {
                     ))
                 }
             </Row>
+
             {products && products.length < total && (
 
             <div className='d-flex justify-content-center my-5 mb-5'>

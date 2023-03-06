@@ -28,7 +28,8 @@ class SessionHelper{
     }
 
     sessionRemove = ()=>{
-        localStorage.clear();
+        localStorage.removeItem('auth');
+        localStorage.removeItem('token');
         window.location.href = '/login'
     }
 

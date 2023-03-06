@@ -69,19 +69,6 @@ const Main = () => {
             <section>
                 <div className="container">
                     <div className="categories my-3">
-                        {/*<ul className="">
-                            {
-                                categories.map(category => (
-                                    <li className="" >
-                                        <Link to= {`/category/posts/${category.name}`}>
-                                            {category.name}
-                                            <Badge count={0} offset={[4]} showZero/>
-                                        </Link>
-                                    </li>
-                                ))
-                            }
-
-                        </ul>*/}
                     </div>
                 </div>
 
